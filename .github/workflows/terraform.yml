@@ -6,7 +6,6 @@ on:
     branches: [ main ]
     paths: ['terraform/**']
 permissions:
-  id-token: write
   contents: read
   pull-requests: write
 jobs:
@@ -17,10 +16,6 @@ jobs:
         working-directory: terraform
     steps:
       - uses: actions/checkout@v4
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws-region: eu-west-1
       - uses: hashicorp/setup-terraform@v3
       - run: terraform init
       - run: terraform validate
@@ -39,6 +34,3 @@ jobs:
               repo: context.repo.repo,
               body
             });
-      - name: Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: echo "terraform apply executado com sucesso!"
