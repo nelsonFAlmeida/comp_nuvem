@@ -1,0 +1,33 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+permissions:
+  contents: read
+jobs:
+  java-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/product-service
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Validate POM
+        run: mvn -B -q validate
+      - name: Compile
+        run: mvn -B -q compile
+      - name: Unit tests
+        run: mvn -B verify
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: services/product-service/target/surefire-reports/
