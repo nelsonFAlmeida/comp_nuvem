@@ -1,4 +1,4 @@
-# Microservices Template - Cloud Computing 2026
+# Microservices Template - Cloud Computing 
 
 This project serves as a **base template** for developing microservices in Java with Spring Boot, designed for educational purposes in Cloud Computing courses.
 
