@@ -4,6 +4,6 @@ provider "aws" {
 
 resource "null_resource" "exemplo" {
   provisioner "local-exec" {
-    command = "echo 'Estrutura Terraform pronta'"
+    command = "echo 'Estrutura Terraform pronta yeet'"
   }
 }
