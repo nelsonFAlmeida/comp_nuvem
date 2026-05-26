@@ -1,0 +1,13 @@
+name: Build All Services
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [user-service, product-service, order-service]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build service
+        run: echo "A construir o serviço ${{ matrix.service }}..."
