@@ -54,3 +54,16 @@ logs/
 # Service PIDs
 .service-pids
 
+# Terraform specific ignores
+*.tfstate*
+.terraform/
+*.tfvars
+
+# Optional: local env files
+*.auto.tfvars
+*.tfstate.backup
+
+# IDE / editor files (common)
+.vscode/
+.idea/
+*.log
