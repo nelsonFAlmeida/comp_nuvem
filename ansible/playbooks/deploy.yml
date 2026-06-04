@@ -1,0 +1,56 @@
+---
+- name: Deploy myproject on EC2 Ubuntu
+  hosts: web
+  become: true
+
+  vars:
+    app_dir: /opt/myproject
+
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Install base packages and Docker stack
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+          - docker.io
+          - docker-compose-plugin
+        state: present
+
+    - name: Ensure Docker service is enabled and running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Create application directory
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Copy docker-compose.yml to the target host
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../../docker-compose.yml"
+        dest: "{{ app_dir }}/docker-compose.yml"
+        mode: '0644'
+
+    - name: Create .env file from Ansible variables
+      ansible.builtin.copy:
+        dest: "{{ app_dir }}/.env"
+        mode: '0600'
+        content: |
+          SPRING_DATASOURCE_URL={{ db_url }}
+          SPRING_DATASOURCE_USERNAME={{ db_user }}
+          SPRING_DATASOURCE_PASSWORD={{ db_pass }}
+          CLOUD_AWS_SQS_ENDPOINT={{ sqs_url }}
+
+    - name: Start containers with Docker Compose
+      ansible.builtin.command: docker compose up -d
+      args:
+        chdir: "{{ app_dir }}"
