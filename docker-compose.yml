@@ -4,55 +4,20 @@ services:
 
   # ─── Infraestrutura ────────────────────────────────────────────────────────
 
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.6.0
-    container_name: zookeeper
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    networks:
-      - microservices-network
-    healthcheck:
-      test: ["CMD", "bash", "-c", "echo ruok | nc localhost 2181 | grep imok"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
-  kafka:
-    image: confluentinc/cp-kafka:7.6.0
-    container_name: kafka
-    depends_on:
-      zookeeper:
-        condition: service_healthy
-    ports:
-      - "9092:9092"
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-    networks:
-      - microservices-network
-    healthcheck:
-      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
-      interval: 15s
-      timeout: 10s
-      retries: 5
 
   # ─── Microserviços ─────────────────────────────────────────────────────────
 
   user-service:
-    build:
-      context: ./services/user-service
-      dockerfile: Dockerfile
+    image: ghcr.io/MEU_USER/user-service:latest
     container_name: user-service
-    ports:
-      - "8081:8081"
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SERVER_PORT: 8081
+      SPRING_DATASOURCE_URL: "${SPRING_DATASOURCE_URL}"
+      SPRING_DATASOURCE_USERNAME: "${SPRING_DATASOURCE_USERNAME}"
+      SPRING_DATASOURCE_PASSWORD: "${SPRING_DATASOURCE_PASSWORD}"
+      CLOUD_AWS_SQS_ENDPOINT: "${CLOUD_AWS_SQS_ENDPOINT}"
     networks:
       - microservices-network
     healthcheck:
@@ -63,19 +28,15 @@ services:
       start_period: 60s
 
   product-service:
-    build:
-      context: ./services/product-service
-      dockerfile: Dockerfile
+    image: ghcr.io/MEU_USER/product-service:latest
     container_name: product-service
-    ports:
-      - "8082:8082"
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SERVER_PORT: 8082
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-    depends_on:
-      kafka:
-        condition: service_healthy
+      SPRING_DATASOURCE_URL: "${SPRING_DATASOURCE_URL}"
+      SPRING_DATASOURCE_USERNAME: "${SPRING_DATASOURCE_USERNAME}"
+      SPRING_DATASOURCE_PASSWORD: "${SPRING_DATASOURCE_PASSWORD}"
+      CLOUD_AWS_SQS_ENDPOINT: "${CLOUD_AWS_SQS_ENDPOINT}"
     networks:
       - microservices-network
     healthcheck:
@@ -86,25 +47,17 @@ services:
       start_period: 60s
 
   order-service:
-    build:
-      context: ./services/order-service
-      dockerfile: Dockerfile
+    image: ghcr.io/MEU_USER/order-service:latest
     container_name: order-service
-    ports:
-      - "8083:8083"
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SERVER_PORT: 8083
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DATASOURCE_URL: "${SPRING_DATASOURCE_URL}"
+      SPRING_DATASOURCE_USERNAME: "${SPRING_DATASOURCE_USERNAME}"
+      SPRING_DATASOURCE_PASSWORD: "${SPRING_DATASOURCE_PASSWORD}"
+      CLOUD_AWS_SQS_ENDPOINT: "${CLOUD_AWS_SQS_ENDPOINT}"
       SERVICES_USER_URL: http://user-service:8081
       SERVICES_PRODUCT_URL: http://product-service:8082
-    depends_on:
-      kafka:
-        condition: service_healthy
-      user-service:
-        condition: service_healthy
-      product-service:
-        condition: service_healthy
     networks:
       - microservices-network
     healthcheck:
@@ -115,9 +68,7 @@ services:
       start_period: 60s
 
   api-gateway:
-    build:
-      context: ./services/api-gateway
-      dockerfile: Dockerfile
+    image: ghcr.io/MEU_USER/api-gateway:latest
     container_name: api-gateway
     ports:
       - "8080:8080"
@@ -127,13 +78,10 @@ services:
       SERVICES_USER_URL: http://user-service:8081
       SERVICES_PRODUCT_URL: http://product-service:8082
       SERVICES_ORDER_URL: http://order-service:8083
-    depends_on:
-      user-service:
-        condition: service_healthy
-      product-service:
-        condition: service_healthy
-      order-service:
-        condition: service_healthy
+      SPRING_DATASOURCE_URL: "${SPRING_DATASOURCE_URL}"
+      SPRING_DATASOURCE_USERNAME: "${SPRING_DATASOURCE_USERNAME}"
+      SPRING_DATASOURCE_PASSWORD: "${SPRING_DATASOURCE_PASSWORD}"
+      CLOUD_AWS_SQS_ENDPOINT: "${CLOUD_AWS_SQS_ENDPOINT}"
     networks:
       - microservices-network
     healthcheck:

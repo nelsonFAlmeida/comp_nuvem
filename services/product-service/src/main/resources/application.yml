@@ -19,15 +19,15 @@ spring:
       hibernate:
         format_sql: true
   
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: product-service-group
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: "*"
-        spring.json.type.mapping: orderCreated:pt.ulusofona.productservice.event.OrderCreatedEvent
+  cloud:
+    aws:
+      region:
+        static: eu-west-1
+      sqs:
+        endpoint: ${CLOUD_AWS_SQS_ENDPOINT:https://sqs.eu-west-1.amazonaws.com}
+        listener:
+          max-concurrent-messages: 10
+          poll-timeout: 10
 
 server:
   port: 8082
@@ -65,5 +65,5 @@ logging:
   level:
     pt.ulusofona.productservice: DEBUG
     org.springframework.web: INFO
-    org.springframework.kafka: INFO
+    io.awspring.cloud.sqs: INFO
 

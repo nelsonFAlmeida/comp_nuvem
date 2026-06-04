@@ -1,28 +1,25 @@
 spring:
   application:
     name: order-service-test
-  
+
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
     username: sa
-    password: 
-  
+    password:
+
   jpa:
     open-in-view: false
     hibernate:
       ddl-auto: create-drop
     show-sql: false
-  
-  kafka:
-    bootstrap-servers: localhost:9092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    consumer:
-      group-id: test-group
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+  cloud:
+    aws:
+      region:
+        static: eu-west-1
+      sqs:
+        endpoint: https://sqs.eu-west-1.amazonaws.com/652259507646/order-events-queue
 
 services:
   user:
@@ -30,3 +27,4 @@ services:
   product:
     url: http://localhost:8082
 
+CLOUD_AWS_SQS_ENDPOINT: https://sqs.eu-west-1.amazonaws.com/652259507646/order-events-queue
