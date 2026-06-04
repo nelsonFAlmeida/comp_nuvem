@@ -1,12 +1,14 @@
 package pt.ulusofona.orderservice.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.awspring.cloud.sqs.operations.SqsTemplate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.test.util.ReflectionTestUtils;
 import pt.ulusofona.orderservice.client.ProductResponse;
 import pt.ulusofona.orderservice.client.ProductServiceClient;
 import pt.ulusofona.orderservice.client.UserResponse;
@@ -31,14 +33,14 @@ import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for OrderService.
- * 
+ *
  * <p>This test class verifies the business logic of the OrderService,
  * including order creation, retrieval, and status updates. It uses
- * Mockito to mock dependencies (repository, Feign clients, Kafka).
- * 
+ * Mockito to mock dependencies (repository, Feign clients, SqsTemplate).
+ *
  * @author Cloud Computing Course
- * @version 1.0.0
- * @since 1.0.0
+ * @version 2.0.0
+ * @since 2.0.0
  */
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -53,10 +55,16 @@ class OrderServiceTest {
     private ProductServiceClient productServiceClient;
 
     @Mock
-    private KafkaTemplate<String, Object> kafkaTemplate;
+    private SqsTemplate sqsTemplate;
+
+    @Mock
+    private ObjectMapper objectMapper;
 
     @InjectMocks
     private OrderService orderService;
+
+    private static final String FAKE_QUEUE_URL =
+            "https://sqs.eu-west-1.amazonaws.com/652259507646/order-events-queue";
 
     private UserResponse testUser;
     private ProductResponse testProduct;
@@ -65,6 +73,9 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
+        // Inject the @Value field that Mockito cannot wire automatically
+        ReflectionTestUtils.setField(orderService, "sqsQueueUrl", FAKE_QUEUE_URL);
+
         // Setup test user
         testUser = new UserResponse(
                 1L,
@@ -109,11 +120,12 @@ class OrderServiceTest {
     }
 
     @Test
-    void testCreateOrder_Success() {
+    void testCreateOrder_Success() throws Exception {
         // Given
         when(userServiceClient.getUserById(1L)).thenReturn(testUser);
         when(productServiceClient.getProductById(1L)).thenReturn(testProduct);
         when(orderRepository.save(any(Order.class))).thenReturn(savedOrder);
+        when(objectMapper.writeValueAsString(any())).thenReturn("{\"orderId\":1}");
 
         // When
         OrderResponse response = orderService.createOrder(orderRequest);
@@ -129,7 +141,8 @@ class OrderServiceTest {
         verify(userServiceClient, times(1)).getUserById(1L);
         verify(productServiceClient, times(1)).getProductById(1L);
         verify(orderRepository, times(1)).save(any(Order.class));
-        verify(kafkaTemplate, times(1)).send(eq("order-created"), any());
+        // Verify SQS send was called with the queue URL
+        verify(sqsTemplate, times(1)).send(eq(FAKE_QUEUE_URL), anyString());
     }
 
     @Test
@@ -253,10 +266,11 @@ class OrderServiceTest {
     }
 
     @Test
-    void testUpdateOrderStatus_Success() {
+    void testUpdateOrderStatus_Success() throws Exception {
         // Given
         when(orderRepository.findById(1L)).thenReturn(Optional.of(savedOrder));
         when(orderRepository.save(any(Order.class))).thenReturn(savedOrder);
+        when(objectMapper.writeValueAsString(any())).thenReturn("{\"orderId\":1}");
         savedOrder.setStatus(OrderStatus.CONFIRMED);
 
         // When
@@ -267,7 +281,8 @@ class OrderServiceTest {
         assertEquals(OrderStatus.CONFIRMED, response.getStatus());
         verify(orderRepository, times(1)).findById(1L);
         verify(orderRepository, times(1)).save(any(Order.class));
-        verify(kafkaTemplate, times(1)).send(eq("order-status-changed"), any());
+        // Verify SQS send was called with the queue URL
+        verify(sqsTemplate, times(1)).send(eq(FAKE_QUEUE_URL), anyString());
     }
 
     @Test
@@ -286,7 +301,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void testCreateOrder_MultipleItems() {
+    void testCreateOrder_MultipleItems() throws Exception {
         // Given
         OrderItemRequest item1 = new OrderItemRequest(1L, 2);
         OrderItemRequest item2 = new OrderItemRequest(2L, 1);
@@ -306,6 +321,7 @@ class OrderServiceTest {
         when(productServiceClient.getProductById(1L)).thenReturn(testProduct);
         when(productServiceClient.getProductById(2L)).thenReturn(product2);
         when(orderRepository.save(any(Order.class))).thenReturn(savedOrder);
+        when(objectMapper.writeValueAsString(any())).thenReturn("{\"orderId\":1}");
 
         // When
         OrderResponse response = orderService.createOrder(multiItemRequest);
@@ -318,4 +334,3 @@ class OrderServiceTest {
         verify(orderRepository, times(1)).save(any(Order.class));
     }
 }
-

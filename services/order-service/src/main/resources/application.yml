@@ -25,19 +25,15 @@ spring:
       hibernate:
         format_sql: true
   
-  kafka:
-    bootstrap-servers: localhost:9092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      acks: all
-    consumer:
-      group-id: order-service-group
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: "*"
-        spring.json.type.mapping: orderCreated:pt.ulusofona.orderservice.event.OrderCreatedEvent,orderStatusChanged:pt.ulusofona.orderservice.event.OrderStatusChangedEvent
+  cloud:
+    aws:
+      region:
+        static: eu-west-1
+      sqs:
+        endpoint: ${CLOUD_AWS_SQS_ENDPOINT:https://sqs.eu-west-1.amazonaws.com}
+        listener:
+          max-concurrent-messages: 10
+          poll-timeout: 10
 
 # Feign Client Configuration
 feign:
@@ -72,7 +68,7 @@ springdoc:
     operations-sorter: alpha
   info:
     title: Order Service API
-    description: Microservice for order management with Kafka and OpenFeign
+    description: Microservice for order management with AWS SQS and OpenFeign
     version: 1.0.0
     contact:
       name: Cloud Computing Course

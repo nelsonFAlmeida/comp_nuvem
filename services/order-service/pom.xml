@@ -16,11 +16,12 @@
     <artifactId>order-service</artifactId>
     <version>1.0.0</version>
     <name>Order Service</name>
-    <description>Microservice for order management with Kafka and OpenFeign</description>
+    <description>Microservice for order management with AWS SQS and OpenFeign</description>
     
     <properties>
         <java.version>21</java.version>
         <spring-cloud.version>2024.0.0</spring-cloud.version>
+        <spring-cloud-aws.version>3.2.1</spring-cloud-aws.version>
         <springdoc.version>2.6.0</springdoc.version>
         <micrometer.version>1.14.0</micrometer.version>
         <mockito.version>5.14.2</mockito.version>
@@ -32,6 +33,13 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.awspring.cloud</groupId>
+                <artifactId>spring-cloud-aws-dependencies</artifactId>
+                <version>${spring-cloud-aws.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -70,10 +78,10 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
         
-        <!-- Kafka -->
+        <!-- AWS SQS -->
         <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
+            <groupId>io.awspring.cloud</groupId>
+            <artifactId>spring-cloud-aws-starter-sqs</artifactId>
         </dependency>
         
         <!-- OpenFeign -->
@@ -118,11 +126,7 @@
             <scope>test</scope>
         </dependency>
         
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka-test</artifactId>
-            <scope>test</scope>
-        </dependency>
+
     </dependencies>
     
     <build>

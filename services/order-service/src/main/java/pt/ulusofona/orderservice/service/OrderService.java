@@ -1,8 +1,10 @@
 package pt.ulusofona.orderservice.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.awspring.cloud.sqs.operations.SqsTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pt.ulusofona.orderservice.client.ProductResponse;
@@ -44,10 +46,10 @@ import java.util.stream.Collectors;
  *   <li>Product Service - to validate products and fetch product details</li>
  * </ul>
  * 
- * <p>The service publishes Kafka events for:
+ * <p>The service publishes SQS events for:
  * <ul>
- *   <li>Order creation - published to "order-created" topic</li>
- *   <li>Status changes - published to "order-status-changed" topic</li>
+ *   <li>Order creation - published to the SQS order-events queue</li>
+ *   <li>Status changes - published to the SQS order-events queue</li>
  * </ul>
  * 
  * @author Cloud Computing Course
@@ -65,10 +67,11 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserServiceClient userServiceClient;
     private final ProductServiceClient productServiceClient;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final SqsTemplate sqsTemplate;
+    private final ObjectMapper objectMapper;
 
-    private static final String ORDER_CREATED_TOPIC = "order-created";
-    private static final String ORDER_STATUS_CHANGED_TOPIC = "order-status-changed";
+    @Value("${CLOUD_AWS_SQS_ENDPOINT}")
+    private String sqsQueueUrl;
 
     /**
      * Creates a new order in the database.
@@ -140,7 +143,7 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
         log.info("Order created successfully with ID: {}", savedOrder.getId());
 
-        // Publish Kafka event (asynchronous)
+        // Publish SQS event (asynchronous)
         publishOrderCreatedEvent(savedOrder);
 
         return mapToResponse(savedOrder);
@@ -218,19 +221,18 @@ public class OrderService {
 
         log.info("Order {} status updated from {} to {}", id, previousStatus, newStatus);
 
-        // Publish Kafka event (asynchronous)
+        // Publish SQS event (asynchronous)
         publishOrderStatusChangedEvent(updatedOrder, previousStatus);
 
         return mapToResponse(updatedOrder);
     }
 
     /**
-     * Publishes an OrderCreatedEvent to Kafka.
-     * 
-     * <p>This method creates an OrderCreatedEvent from the order entity and
-     * publishes it to the "order-created" Kafka topic. Other services can
-     * subscribe to this topic to react to order creation.
-     * 
+     * Publishes an OrderCreatedEvent to the SQS queue.
+     *
+     * <p>Serialises the event as JSON and sends it to the configured SQS endpoint.
+     * Other services (e.g. product-service) poll the queue with {@code @SqsListener}.
+     *
      * @param order The order that was created
      */
     private void publishOrderCreatedEvent(Order order) {
@@ -249,22 +251,18 @@ public class OrderService {
                     order.getCreatedAt()
             );
 
-            kafkaTemplate.send(ORDER_CREATED_TOPIC, event);
-            log.info("Published OrderCreatedEvent for order ID: {}", order.getId());
+            String payload = objectMapper.writeValueAsString(event);
+            sqsTemplate.send(sqsQueueUrl, payload);
+            log.info("Published OrderCreatedEvent to SQS for order ID: {}", order.getId());
         } catch (Exception e) {
             log.error("Failed to publish OrderCreatedEvent for order ID: {}", order.getId(), e);
-            // Note: In production, you might want to use a dead letter queue or retry mechanism
         }
     }
 
     /**
-     * Publishes an OrderStatusChangedEvent to Kafka.
-     * 
-     * <p>This method creates an OrderStatusChangedEvent from the order entity and
-     * publishes it to the "order-status-changed" Kafka topic. Other services can
-     * subscribe to this topic to react to status changes.
-     * 
-     * @param order The order whose status changed
+     * Publishes an OrderStatusChangedEvent to the SQS queue.
+     *
+     * @param order          The order whose status changed
      * @param previousStatus The previous status before the change
      */
     private void publishOrderStatusChangedEvent(Order order, OrderStatus previousStatus) {
@@ -277,12 +275,12 @@ public class OrderService {
                     LocalDateTime.now()
             );
 
-            kafkaTemplate.send(ORDER_STATUS_CHANGED_TOPIC, event);
-            log.info("Published OrderStatusChangedEvent for order ID: {} ({} -> {})",
+            String payload = objectMapper.writeValueAsString(event);
+            sqsTemplate.send(sqsQueueUrl, payload);
+            log.info("Published OrderStatusChangedEvent to SQS for order ID: {} ({} -> {})",
                     order.getId(), previousStatus, order.getStatus());
         } catch (Exception e) {
             log.error("Failed to publish OrderStatusChangedEvent for order ID: {}", order.getId(), e);
-            // Note: In production, you might want to use a dead letter queue or retry mechanism
         }
     }
 
