@@ -19,8 +19,13 @@
           - gnupg
           - lsb-release
           - docker.io
-          - docker-compose-plugin
         state: present
+
+    - name: Install Docker Compose standalone
+      ansible.builtin.get_url:
+        url: https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
 
     - name: Ensure Docker service is enabled and running
       ansible.builtin.service:
@@ -51,6 +56,6 @@
           CLOUD_AWS_SQS_ENDPOINT={{ sqs_url }}
 
     - name: Start containers with Docker Compose
-      ansible.builtin.command: docker compose up -d
+      ansible.builtin.command: docker-compose up -d
       args:
         chdir: "{{ app_dir }}"

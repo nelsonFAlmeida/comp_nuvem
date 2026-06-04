@@ -9,7 +9,7 @@ services:
   # ─── Microserviços ─────────────────────────────────────────────────────────
 
   user-service:
-    image: ghcr.io/MEU_USER/user-service:latest
+    image: nels0n23/user-service:latest
     container_name: user-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
@@ -28,7 +28,7 @@ services:
       start_period: 60s
 
   product-service:
-    image: ghcr.io/MEU_USER/product-service:latest
+    image: nels0n23/product-service:latest
     container_name: product-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
@@ -47,7 +47,7 @@ services:
       start_period: 60s
 
   order-service:
-    image: ghcr.io/MEU_USER/order-service:latest
+    image: nels0n23/order-service:latest
     container_name: order-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
@@ -68,7 +68,7 @@ services:
       start_period: 60s
 
   api-gateway:
-    image: ghcr.io/MEU_USER/api-gateway:latest
+    image: nels0n23/api-gateway:latest
     container_name: api-gateway
     ports:
       - "8080:8080"
