@@ -29,6 +29,22 @@
           "path": ["actuator","health"]
         }
       },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 2xx', function () {",
+              "    pm.expect(pm.response.code).to.be.within(200, 299);",
+              "});",
+              "pm.test('Response is JSON', function () {",
+              "    pm.response.to.be.json();",
+              "});"
+            ]
+          }
+        }
+      ],
       "response": []
     },
     {
@@ -42,6 +58,19 @@
           "path": ["swagger-ui.html"]
         }
       },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 2xx', function () {",
+              "    pm.expect(pm.response.code).to.be.within(200, 299);",
+              "});"
+            ]
+          }
+        }
+      ],
       "response": []
     },
     {
@@ -55,6 +84,22 @@
           "path": ["api","users"]
         }
       },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 2xx', function () {",
+              "    pm.expect(pm.response.code).to.be.within(200, 299);",
+              "});",
+              "pm.test('Response is JSON array or object', function () {",
+              "    pm.response.to.be.json();",
+              "});"
+            ]
+          }
+        }
+      ],
       "response": []
     },
     {
@@ -74,6 +119,22 @@
           "path": ["api","users"]
         }
       },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 2xx', function () {",
+              "    pm.expect(pm.response.code).to.be.within(200, 299);",
+              "});",
+              "pm.test('Response is JSON', function () {",
+              "    pm.response.to.be.json();",
+              "});"
+            ]
+          }
+        }
+      ],
       "response": []
     },
     {
@@ -87,6 +148,22 @@
           "path": ["api","products"]
         }
       },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 2xx', function () {",
+              "    pm.expect(pm.response.code).to.be.within(200, 299);",
+              "});",
+              "pm.test('Response is JSON array or object', function () {",
+              "    pm.response.to.be.json();",
+              "});"
+            ]
+          }
+        }
+      ],
       "response": []
     },
     {
@@ -106,6 +183,22 @@
           "path": ["api","products"]
         }
       },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 2xx', function () {",
+              "    pm.expect(pm.response.code).to.be.within(200, 299);",
+              "});",
+              "pm.test('Response is JSON', function () {",
+              "    pm.response.to.be.json();",
+              "});"
+            ]
+          }
+        }
+      ],
       "response": []
     },
     {
@@ -119,6 +212,22 @@
           "path": ["api","orders"]
         }
       },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 2xx', function () {",
+              "    pm.expect(pm.response.code).to.be.within(200, 299);",
+              "});",
+              "pm.test('Response is JSON array or object', function () {",
+              "    pm.response.to.be.json();",
+              "});"
+            ]
+          }
+        }
+      ],
       "response": []
     },
     {
@@ -138,6 +247,22 @@
           "path": ["api","orders"]
         }
       },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 2xx', function () {",
+              "    pm.expect(pm.response.code).to.be.within(200, 299);",
+              "});",
+              "pm.test('Response is JSON', function () {",
+              "    pm.response.to.be.json();",
+              "});"
+            ]
+          }
+        }
+      ],
       "response": []
     }
   ]
