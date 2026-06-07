@@ -55,7 +55,12 @@
           SPRING_DATASOURCE_PASSWORD={{ db_pass }}
           CLOUD_AWS_SQS_ENDPOINT={{ sqs_url }}
 
+    - name: Pull latest Docker images
+      ansible.builtin.command: docker-compose pull
+      args:
+        chdir: "{{ app_dir }}"
+
     - name: Start containers with Docker Compose
-      ansible.builtin.command: docker-compose up -d
+      ansible.builtin.command: docker-compose up -d --remove-orphans
       args:
         chdir: "{{ app_dir }}"
