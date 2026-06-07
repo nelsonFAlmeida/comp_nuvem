@@ -48,7 +48,8 @@ jobs:
       - name: Build and push Docker image
         working-directory: services/${{ matrix.service }}
         run: |
-          IMAGE=ghcr.io/${{ github.repository_owner }}/${{ matrix.service }}
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          IMAGE=ghcr.io/${OWNER}/${{ matrix.service }}
           docker build -t "$IMAGE:latest" -t "$IMAGE:${{ github.sha }}" .
           docker push "$IMAGE:latest"
           docker push "$IMAGE:${{ github.sha }}"
