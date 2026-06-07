@@ -271,15 +271,14 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/users/v3/api-docs",
+          "raw": "{{base_url}}/v3/api-docs/user-service",
           "host": [
             "{{base_url}}"
           ],
           "path": [
-            "api",
-            "users",
             "v3",
-            "api-docs"
+            "api-docs",
+            "user-service"
           ]
         }
       },
@@ -291,15 +290,14 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/products/v3/api-docs",
+          "raw": "{{base_url}}/v3/api-docs/product-service",
           "host": [
             "{{base_url}}"
           ],
           "path": [
-            "api",
-            "products",
             "v3",
-            "api-docs"
+            "api-docs",
+            "product-service"
           ]
         }
       },
@@ -311,15 +309,14 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/api/orders/v3/api-docs",
+          "raw": "{{base_url}}/v3/api-docs/order-service",
           "host": [
             "{{base_url}}"
           ],
           "path": [
-            "api",
-            "orders",
             "v3",
-            "api-docs"
+            "api-docs",
+            "order-service"
           ]
         }
       },

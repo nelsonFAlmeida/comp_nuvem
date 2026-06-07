@@ -4,18 +4,36 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: user-service-docs
+          uri: ${SERVICES_USER_URL:http://localhost:8081}
+          predicates:
+            - Path=/v3/api-docs/user-service
+          filters:
+            - RewritePath=/v3/api-docs/user-service, /api-docs
         - id: user-service
           uri: ${SERVICES_USER_URL:http://localhost:8081}
           predicates:
             - Path=/api/users/**
           filters:
             - StripPrefix=1
+        - id: product-service-docs
+          uri: ${SERVICES_PRODUCT_URL:http://localhost:8082}
+          predicates:
+            - Path=/v3/api-docs/product-service
+          filters:
+            - RewritePath=/v3/api-docs/product-service, /api-docs
         - id: product-service
           uri: ${SERVICES_PRODUCT_URL:http://localhost:8082}
           predicates:
             - Path=/api/products/**
           filters:
             - StripPrefix=1
+        - id: order-service-docs
+          uri: ${SERVICES_ORDER_URL:http://localhost:8083}
+          predicates:
+            - Path=/v3/api-docs/order-service
+          filters:
+            - RewritePath=/v3/api-docs/order-service, /api-docs
         - id: order-service
           uri: ${SERVICES_ORDER_URL:http://localhost:8083}
           predicates:
@@ -47,11 +65,11 @@ springdoc:
     enabled: true
     urls:
       - name: User Service
-        url: /api/users/v3/api-docs
+        url: /v3/api-docs/user-service
       - name: Product Service
-        url: /api/products/v3/api-docs
+        url: /v3/api-docs/product-service
       - name: Order Service
-        url: /api/orders/v3/api-docs
+        url: /v3/api-docs/order-service
   info:
     title: API Gateway
     description: Single entry point for all microservices
