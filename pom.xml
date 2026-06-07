@@ -12,9 +12,9 @@
     <description>Aggregator POM for all microservices</description>
 
     <modules>
-        <module>user-service</module>
-        <module>product-service</module>
-        <module>order-service</module>
-        <module>api-gateway</module>
+        <module>services/user-service</module>
+        <module>services/product-service</module>
+        <module>services/order-service</module>
+        <module>services/api-gateway</module>
     </modules>
 </project>

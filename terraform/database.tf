@@ -12,9 +12,9 @@ module "db" {
 
   allocated_storage = 20
 
-  db_name  = "finalprojectdb"
-  username = "postgres"
-  password = "dbpassword123" # Simplified for university project context
+  db_name                     = "finalprojectdb"
+  username                    = "postgres"
+  password                    = "dbpassword123" # Simplified for university project context
   manage_master_user_password = false
 
   db_subnet_group_name   = module.vpc.database_subnet_group_name
