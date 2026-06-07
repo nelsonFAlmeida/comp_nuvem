@@ -54,6 +54,6 @@ public interface ProductServiceClient {
      * </pre>
      */
     @GetMapping("/products/{id}")
-    ProductResponse getProductById(@PathVariable Long id);
+    ProductResponse getProductById(@PathVariable("id") Long id);
 }
 

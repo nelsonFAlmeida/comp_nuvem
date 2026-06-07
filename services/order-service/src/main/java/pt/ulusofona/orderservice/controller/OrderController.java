@@ -110,7 +110,7 @@ public class OrderController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponse> getOrderById(
-            @Parameter(description = "Order ID", required = true) @PathVariable Long id) {
+            @Parameter(description = "Order ID", required = true) @PathVariable("id") Long id) {
         OrderResponse order = orderService.getOrderById(id);
         return ResponseEntity.ok(order);
     }
@@ -126,7 +126,7 @@ public class OrderController {
     @ApiResponse(responseCode = "200", description = "Successfully retrieved user orders")
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<OrderResponse>> getOrdersByUserId(
-            @Parameter(description = "User ID", required = true) @PathVariable Long userId) {
+            @Parameter(description = "User ID", required = true) @PathVariable("userId") Long userId) {
         List<OrderResponse> orders = orderService.getOrdersByUserId(userId);
         return ResponseEntity.ok(orders);
     }
@@ -149,8 +149,8 @@ public class OrderController {
     })
     @PutMapping("/{id}/status")
     public ResponseEntity<OrderResponse> updateOrderStatus(
-            @Parameter(description = "Order ID", required = true) @PathVariable Long id,
-            @Parameter(description = "New order status", required = true) @RequestParam OrderStatus status) {
+            @Parameter(description = "Order ID", required = true) @PathVariable("id") Long id,
+            @Parameter(description = "New order status", required = true) @RequestParam("status") OrderStatus status) {
         OrderResponse updatedOrder = orderService.updateOrderStatus(id, status);
         return ResponseEntity.ok(updatedOrder);
     }

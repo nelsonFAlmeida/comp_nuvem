@@ -51,6 +51,6 @@ public interface UserServiceClient {
      * </pre>
      */
     @GetMapping("/users/{id}")
-    UserResponse getUserById(@PathVariable Long id);
+    UserResponse getUserById(@PathVariable("id") Long id);
 }
 

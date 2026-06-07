@@ -123,7 +123,7 @@ public class ProductController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(
-            @Parameter(description = "Product ID", required = true) @PathVariable Long id) {
+            @Parameter(description = "Product ID", required = true) @PathVariable("id") Long id) {
         ProductResponse product = productService.getProductById(id);
         return ResponseEntity.ok(product);
     }
@@ -158,7 +158,7 @@ public class ProductController {
     @ApiResponse(responseCode = "200", description = "Search completed successfully")
     @GetMapping("/search")
     public ResponseEntity<List<ProductResponse>> searchProducts(
-            @Parameter(description = "Search term", required = true) @RequestParam String name) {
+            @Parameter(description = "Search term", required = true) @RequestParam("name") String name) {
         List<ProductResponse> products = productService.searchProductsByName(name);
         return ResponseEntity.ok(products);
     }
@@ -250,7 +250,7 @@ public class ProductController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponse> updateProduct(
-            @Parameter(description = "Product ID", required = true) @PathVariable Long id,
+            @Parameter(description = "Product ID", required = true) @PathVariable("id") Long id,
             @Parameter(description = "Updated product data", required = true) @Valid @RequestBody ProductRequest request) {
         ProductResponse updatedProduct = productService.updateProduct(id, request);
         return ResponseEntity.ok(updatedProduct);
@@ -279,7 +279,7 @@ public class ProductController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(
-            @Parameter(description = "Product ID", required = true) @PathVariable Long id) {
+            @Parameter(description = "Product ID", required = true) @PathVariable("id") Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }

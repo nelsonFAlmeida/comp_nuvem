@@ -120,7 +120,7 @@ public class UserController {
     })
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(
-            @Parameter(description = "User ID", required = true) @PathVariable Long id) {
+            @Parameter(description = "User ID", required = true) @PathVariable("id") Long id) {
         UserResponse user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
@@ -211,7 +211,7 @@ public class UserController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(
-            @Parameter(description = "User ID", required = true) @PathVariable Long id,
+            @Parameter(description = "User ID", required = true) @PathVariable("id") Long id,
             @Parameter(description = "Updated user data", required = true) @Valid @RequestBody UserRequest request) {
         UserResponse updatedUser = userService.updateUser(id, request);
         return ResponseEntity.ok(updatedUser);
@@ -240,7 +240,7 @@ public class UserController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(
-            @Parameter(description = "User ID", required = true) @PathVariable Long id) {
+            @Parameter(description = "User ID", required = true) @PathVariable("id") Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
