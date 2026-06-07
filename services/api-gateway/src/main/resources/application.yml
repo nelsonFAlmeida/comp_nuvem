@@ -5,19 +5,19 @@ spring:
     gateway:
       routes:
         - id: user-service
-          uri: http://localhost:8081
+          uri: ${SERVICES_USER_URL:http://localhost:8081}
           predicates:
             - Path=/api/users/**
           filters:
             - StripPrefix=1
         - id: product-service
-          uri: http://localhost:8082
+          uri: ${SERVICES_PRODUCT_URL:http://localhost:8082}
           predicates:
             - Path=/api/products/**
           filters:
             - StripPrefix=1
         - id: order-service
-          uri: http://localhost:8083
+          uri: ${SERVICES_ORDER_URL:http://localhost:8083}
           predicates:
             - Path=/api/orders/**
           filters:
