@@ -50,7 +50,8 @@
         dest: "{{ app_dir }}/.env"
         mode: '0600'
         content: |
-          SPRING_DATASOURCE_URL={{ db_url }}
+          SPRING_DATASOURCE_URL=jdbc:postgresql://{{ db_url }}/finalprojectdb
+          SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
           SPRING_DATASOURCE_USERNAME={{ db_user }}
           SPRING_DATASOURCE_PASSWORD={{ db_pass }}
           CLOUD_AWS_SQS_ENDPOINT={{ sqs_url }}
