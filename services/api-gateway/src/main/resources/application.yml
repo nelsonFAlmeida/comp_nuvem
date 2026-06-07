@@ -45,6 +45,13 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
+    urls:
+      - name: User Service
+        url: /api/users/v3/api-docs
+      - name: Product Service
+        url: /api/products/v3/api-docs
+      - name: Order Service
+        url: /api/orders/v3/api-docs
   info:
     title: API Gateway
     description: Single entry point for all microservices
