@@ -56,6 +56,9 @@
           SPRING_DATASOURCE_PASSWORD={{ db_pass }}
           CLOUD_AWS_SQS_ENDPOINT={{ sqs_url }}
 
+    - name: Log in to GitHub Container Registry
+      ansible.builtin.command: docker login ghcr.io -u "{{ gh_user }}" -p "{{ gh_token }}"
+
     - name: Pull latest Docker images
       ansible.builtin.command: docker-compose pull
       args:

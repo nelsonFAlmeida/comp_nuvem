@@ -12,6 +12,7 @@ services:
     image: ghcr.io/nelsonfalmeida/user-service:latest
     container_name: user-service
     environment:
+      JAVA_TOOL_OPTIONS: "-Xmx256m"
       SPRING_PROFILES_ACTIVE: docker
       SERVER_PORT: 8081
       SPRING_DATASOURCE_URL: "${SPRING_DATASOURCE_URL}"

@@ -125,6 +125,7 @@ jobs:
       - name: Run Ansible deploy playbook
         env:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ansible-playbook -i inventory.ini ansible/playbooks/deploy.yml \
-            --extra-vars "db_url=${{ needs.terraform-apply.outputs.rds_endpoint }} db_user=postgres db_pass=${DB_PASSWORD} sqs_url=${{ needs.terraform-apply.outputs.sqs_queue_url }}"
+            --extra-vars "db_url=${{ needs.terraform-apply.outputs.rds_endpoint }} db_user=postgres db_pass=${DB_PASSWORD} sqs_url=${{ needs.terraform-apply.outputs.sqs_queue_url }} gh_user=${{ github.actor }} gh_token=${GH_TOKEN}"
