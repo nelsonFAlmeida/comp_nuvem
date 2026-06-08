@@ -25,6 +25,9 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @since 1.0.0
  * @see org.springframework.cloud.openfeign.FeignClient
  */
+import io.swagger.v3.oas.annotations.Hidden;
+
+@Hidden
 @FeignClient(name = "product-service", url = "${services.product.url}")
 public interface ProductServiceClient {
 
