@@ -20,6 +20,8 @@ spring:
         format_sql: true
   
   cloud:
+    discovery:
+      enabled: false
     aws:
       region:
         static: eu-west-1

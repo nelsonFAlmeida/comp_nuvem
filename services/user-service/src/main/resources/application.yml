@@ -1,6 +1,9 @@
 spring:
   application:
     name: user-service
+  cloud:
+    discovery:
+      enabled: false
   datasource:
     url: jdbc:h2:mem:usersdb
     driver-class-name: org.h2.Driver

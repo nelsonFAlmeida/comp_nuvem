@@ -27,6 +27,8 @@ spring:
         format_sql: true
   
   cloud:
+    discovery:
+      enabled: false
     aws:
       region:
         static: eu-west-1
@@ -76,9 +78,11 @@ springdoc:
       email: support@example.com
 
 # Service URLs (for Feign clients)
+# In Docker/AWS the env vars SERVICES_USER_URL / SERVICES_PRODUCT_URL are injected
+# by docker-compose.yml. The fallback values use Docker DNS service names.
 services:
   user:
-    url: http://localhost:8081
+    url: ${SERVICES_USER_URL:http://user-service:8081}
   product:
-    url: http://localhost:8082
+    url: ${SERVICES_PRODUCT_URL:http://product-service:8082}
 
