@@ -31,41 +31,10 @@ import org.springframework.context.annotation.Configuration;
  * @see org.springframework.cloud.gateway.route.RouteLocator
  * @see org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder
  */
-@Configuration
+// @Configuration Disabled to allow application.yml routes to take precedence
 public class GatewayConfig {
 
-    /**
-     * Creates and configures the RouteLocator bean for API Gateway routing.
-     * 
-     * <p>This method defines the routing rules for the gateway. Each route
-     * specifies:
-     * <ul>
-     *   <li>A unique route ID</li>
-     *   <li>A path pattern to match</li>
-     *   <li>A destination URI to forward requests to</li>
-     * </ul>
-     * 
-     * <p>The gateway will:
-     * <ol>
-     *   <li>Match incoming requests against the path patterns</li>
-     *   <li>Forward matching requests to the corresponding backend service</li>
-     *   <li>Return the response from the backend service to the client</li>
-     * </ol>
-     * 
-     * <p>Example routing:
-     * <ul>
-     *   <li>Client request: GET http://localhost:8080/api/users/1</li>
-     *   <li>Gateway forwards to: GET http://localhost:8081/users/1</li>
-     *   <li>Note: The /api prefix is removed when forwarding</li>
-     * </ul>
-     * 
-     * @param builder RouteLocatorBuilder for constructing routes
-     * @return RouteLocator containing all configured routes
-     * @apiNote When Docker Compose is implemented, update URIs to use service names:
-     *          - http://user-service:8081 (instead of http://localhost:8081)
-     *          - http://product-service:8082 (instead of http://localhost:8082)
-     */
-    @Bean
+    // @Bean Disabled
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
                 // User Service routes

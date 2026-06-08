@@ -86,7 +86,7 @@ public class Order {
      * @see OrderStatus
      */
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(255)")
     private OrderStatus status = OrderStatus.PENDING;
 
     /**
