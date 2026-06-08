@@ -54,6 +54,7 @@
           SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
           SPRING_DATASOURCE_USERNAME={{ db_user }}
           SPRING_DATASOURCE_PASSWORD={{ db_pass }}
+          SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
           CLOUD_AWS_SQS_ENDPOINT={{ sqs_url }}
           SERVICES_USER_URL=http://user-service:8081
           SERVICES_PRODUCT_URL=http://product-service:8082
