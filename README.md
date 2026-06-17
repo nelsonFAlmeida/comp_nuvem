@@ -624,4 +624,4 @@ This project is for educational purposes.
 - [Spring Cloud Gateway Documentation](https://spring.io/projects/spring-cloud-gateway)
 - [Spring Data JPA Documentation](https://spring.io/projects/spring-data-jpa)
 - [Microservices Patterns](https://microservices.io/patterns/)
-- [Course Materials](Aulas/README.md)
+- [Course Materials](Aulas/README.md) 
